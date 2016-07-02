@@ -3,8 +3,9 @@
 #define EMPTY	0
 #define BLACK	1
 #define WHITE	2
+#define SELECT 10
 #define SELECTED_BLACK 11
-#define SELECTED_WHITE 22
+#define SELECTED_WHITE 12
 #define DELETE_WITHDRAW_BLACK 81
 #define DELETE_WITHDRAW_WHITE 82
 #define DELETE_APPROACH_BLACK 91
@@ -24,7 +25,7 @@
 #define GREEDY	500
 #define PRUNING	600
 
-#define DEPTH 5
+#define DEPTH 3
 const char Title[] = "Fanorona";
 const char Icon[] = "./Data/Icon.bmp";
 

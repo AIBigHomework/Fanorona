@@ -15,10 +15,14 @@ struct _Node
 {
 	_Board board;
 	_Action lastaction;
-	double alpha, beta;
+	double value;
 };
 void AIPlay(_Board &Board, SDL_Surface* Screen, char AIColour, int Mode);
 void AlphaBetaPlay(_Board &Board, SDL_Surface* Screen, char AIColour, int depth);
 _Node AlphaPlay(_Node Root, int depth, double a, double b);
 _Node BetaPlay(_Node Root, int depth, double a, double b);
 std::vector<_Node> GetPossable(_Node node, char AIColor);
+std::vector<_Node> GetPossable(_Node node);
+bool canRemoveBack(_Node &node, int remove);
+bool canRemoveFront(_Node &node, int remove);
+void ShowAction(_Board &Board, SDL_Surface *Screen, _Action action);
