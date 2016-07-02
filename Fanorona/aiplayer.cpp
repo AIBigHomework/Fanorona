@@ -16,12 +16,12 @@ void AIPlay(_Board &Board, SDL_Surface* Screen, char AIColour, int Mode)
 	}
 }
 
-bool canRemoveFront(_Node &node)
+bool canRemoveFront(_Node &node, int remove)
 {
 
 }
 
-bool canRemoveBack(_Node &node)
+bool canRemoveBack(_Node &node, int remove)
 {
 
 }
