@@ -18,13 +18,105 @@ void AIPlay(_Board &Board, SDL_Surface* Screen, char AIColour, int Mode)
 
 bool canRemoveFront(_Node &node, int remove)
 {
-
+	_Stone stone = { node.lastaction.actions.back().x,node.lastaction.actions.back().y };
+	_Stone laststone;
+	int actionNum = node.lastaction.actions.size();
+	if (actionNum >= 2)
+	{
+		laststone = { node.lastaction.actions[actionNum - 2].x, node.lastaction.actions[actionNum - 2].y };
+	}
+	else
+	{
+		laststone = node.lastaction.stone;
+	}
+	int count = 0;
+	char AIColor = node.board.data[stone.x][stone.y];
+	char rmColor = 3 - AIColor;
+	int dx = stone.x - laststone.x, dy = stone.y - laststone.y;
+	_Stone nextStone = { stone.x + dx,stone.y + dy };
+	while (nextStone.x>=0 && nextStone.x<=4 && nextStone.y>=0 && nextStone.y<=8 && node.board.data[nextStone.x][nextStone.y] == rmColor)
+	{
+		count++;
+		if (remove)
+		{
+			node.lastaction.actions.back().removedNum = count;
+			node.lastaction.actions.back().removed[count - 1] = nextStone;
+			node.board.data[nextStone.x][nextStone.y] = EMPTY;
+		}
+		nextStone = { nextStone.x + dx,nextStone.y + dy };
+	}
+	return count > 0;
 }
 
 bool canRemoveBack(_Node &node, int remove)
 {
-
+	_Stone stone = { node.lastaction.actions.back().x,node.lastaction.actions.back().y };
+	_Stone laststone;
+	int actionNum = node.lastaction.actions.size();
+	if (actionNum >= 2)
+	{
+		laststone = { node.lastaction.actions[actionNum - 2].x, node.lastaction.actions[actionNum - 2].y };
+	}
+	else
+	{
+		laststone = node.lastaction.stone;
+	}
+	int count = 0;
+	char AIColor = node.board.data[stone.x][stone.y];
+	char rmColor = 3 - AIColor;
+	int dx = -stone.x + laststone.x, dy = -stone.y + laststone.y;
+	_Stone nextStone = { stone.x + dx,stone.y + dy };
+	while (nextStone.x >= 0 && nextStone.x <= 4 && nextStone.y >= 0 && nextStone.y <= 8 && node.board.data[nextStone.x][nextStone.y] == rmColor)
+	{
+		count++;
+		if (remove)
+		{
+			node.lastaction.actions.back().removedNum = count;
+			node.lastaction.actions.back().removed[count - 1] = nextStone;
+			node.board.data[nextStone.x][nextStone.y] = EMPTY;
+		}
+		nextStone = { nextStone.x + dx,nextStone.y + dy };
+	}
+	return count > 0;
 }
+
+
+vector<_Node> GetPossable(_Node node)
+{
+	vector<_Node> result;
+	_Stone stone = { node.lastaction.actions.back().x,node.lastaction.actions.back().y };
+	for (int j = 0; j < 8; j++)
+	{
+		if (neighbors[stone.x][stone.y][j] && node.board.data[stone.x + neighbors2[j][0]][stone.y + neighbors2[j][1]] == EMPTY)
+		{
+			_Node tmp = node;
+			char AIColor = tmp.board.data[stone.x][stone.y];
+			tmp.lastaction.actions.push_back({ stone.x + neighbors2[j][0], stone.y + neighbors2[j][1] });
+			tmp.board.data[stone.x][stone.y] = EMPTY;
+			tmp.board.data[stone.x + neighbors2[j][0]][stone.y + neighbors2[j][1]] = AIColor;
+			_Node tmp2 = tmp;
+			queue<_Node> Q;
+			if (canRemoveFront(tmp, 0) || canRemoveBack(tmp, 0))
+			{
+				if (canRemoveFront(tmp, 1))
+				{
+					result.push_back(tmp);
+				}
+				if (canRemoveBack(tmp2,1))
+				{
+					result.push_back(tmp2);
+				}
+			}
+			else
+			{
+				continue;
+			}
+			
+		}
+	}
+	return result;
+}
+
 vector<_Node> GetPossable(_Node node, char AIColor)
 {
 	vector<_Node> result;
@@ -36,26 +128,35 @@ vector<_Node> GetPossable(_Node node, char AIColor)
 			if (neighbors[freestones[i].x][freestones[i].y][j] && node.board.data[freestones[i].x + neighbors2[j][0]][freestones[i].y + neighbors2[j][1]] == EMPTY)
 			{
 				_Node tmp = node;
-				tmp.lastaction = { freestones[i],{ { freestones[i].x - 1,freestones[i].y - 1 } } };
+				tmp.lastaction = { freestones[i],{ { freestones[i].x + neighbors2[j][0],freestones[i].y + neighbors2[j][1] } } };
 				tmp.board.data[freestones[i].x][freestones[i].y] = EMPTY;
-				tmp.board.data[freestones[i].x - 1][freestones[i].y - 1] = AIColor;
+				tmp.board.data[freestones[i].x + neighbors2[j][0]][freestones[i].y + neighbors2[j][1]] = AIColor;
+				_Node tmp2 = tmp;
 				queue<_Node> Q;
-				Q.push(tmp);
+				if (canRemoveFront(tmp, 1))
+				{
+					Q.push(tmp);
+				}
+				if (canRemoveBack(tmp2, 1))
+				{
+					Q.push(tmp2);
+				}
+				
 				while (!Q.empty())
 				{
-					_Node tmp = Q.front(), tmp2 = Q.front();
+					_Node tmp = Q.front();
+					vector<_Node> v = GetPossable(tmp);
 					Q.pop();
-					if (canRemoveFront(tmp))
+					if (v.size() == 0)
 					{
-
+						result.push_back(tmp);
+						continue;
 					}
-					if (canRemoveBack(tmp2))
+					for (int k = 0; k < v.size(); k++)
 					{
-
+						Q.push(v[k]);
 					}
-					result.push_back(tmp);
 				}
-				result.push_back(tmp);
 			}
 		}
 		
