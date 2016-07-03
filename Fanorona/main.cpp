@@ -35,7 +35,7 @@ void CleanUp()
 	SDL_FreeSurface(Screen);
 	SDL_Quit();
 }
-
+/*
 int main()
 {
 	_Board Board;
@@ -99,3 +99,4 @@ int main()
 	CleanUp();
 	return 0;
 }
+*/

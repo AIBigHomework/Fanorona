@@ -152,12 +152,15 @@
   <ItemGroup>
     <ClCompile Include="aiplayer.cpp" />
     <ClCompile Include="board.cpp" />
+    <ClCompile Include="BP.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="stone.cpp" />
+    <ClCompile Include="test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="aiplayer.h" />
     <ClInclude Include="board.h" />
+    <ClInclude Include="BP.h" />
     <ClInclude Include="constants.h" />
     <ClInclude Include="stone.h" />
   </ItemGroup>
