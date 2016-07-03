@@ -3,6 +3,7 @@
 #define _BP_H_  
 
 #include <vector>  
+#include <stack>
 
 #define LAYER    3        //三层神经网络  
 #define NUM      45       //每层的最多节点数  
@@ -28,19 +29,21 @@ class BP {
 
 public:
 
-	void GetData(const Vector<Data>);
+	void GetData(const Data);
 	void Train();
+	void TrainFanorona(std::stack<Data> s);
 	Vector<Type> ForeCast(const Vector<Type>);
+	BP::BP(int innum, int outnum);
 
 private:
 
 	void InitNetWork();         //初始化网络  
 	void GetNums();             //获取输入、输出和隐含层节点数  
 	void ForwardTransfer();     //正向传播子过程  
-	void ReverseTransfer(int);  //逆向传播子过程  
-	void CalcDelta(int);        //计算w和b的调整量  
+	void ReverseTransfer();  //逆向传播子过程  
+	void CalcDelta();        //计算w和b的调整量  
 	void UpdateNetWork();       //更新权值和阀值  
-	Type GetError(int);         //计算单个样本的误差  
+	Type GetError();         //计算单个样本的误差  
 	Type GetAccu();             //计算所有样本的精度  
 	Type Sigmoid(const Type);   //计算Sigmoid的值  
 
@@ -49,7 +52,7 @@ private:
 	int ou_num;                 //输出层节点数  
 	int hd_num;                 //隐含层节点数  
 
-	Vector<Data> data;          //输入输出数据  
+	Data data;          //输入输出数据  
 
 	Type w[LAYER][NUM][NUM];    //BP网络的权值  
 	Type b[LAYER][NUM];         //BP网络节点的阀值  
