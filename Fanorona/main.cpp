@@ -43,7 +43,7 @@ int main()
 	bool Running = true;
 	char AIColour1 = BLACK;
 	char AIColour2 = WHITE;
-	char nowColor = BLACK;
+	char nowColor = WHITE;
 	int status = PLAY;
 
 	Initialize();

@@ -126,7 +126,8 @@ double value(_Node node)
 	{
 		dis += y2 - y1;
 	}
-	return 10*(v1 - v2)/dis;
+	
+	return 10 * (v1 - v2);// / dis;
 }
 
 vector<_Node> GetPossable(_Node node)
@@ -263,7 +264,7 @@ _Node BetaPlay(_Node Root, int depth, double a, double b)
 {
 	vector<_Node> subs = GetPossable(Root, WHITE);
 
-	double beta = b;
+	double beta = DBL_MAX;
 	_Node result;
 	if (depth == 0)
 	{
@@ -292,7 +293,7 @@ _Node AlphaPlay(_Node Root, int depth, double a, double b)
 {
 	vector<_Node> subs = GetPossable(Root, BLACK);
 
-	double alpha = a;
+	double alpha = -DBL_MAX;
 	_Node result;
 	if (depth == 0)
 	{
