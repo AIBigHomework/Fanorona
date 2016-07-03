@@ -296,3 +296,32 @@ std::vector<_Stone> GetFreeStones(_Board board, char color)
 	}
 	return freeStones;
 }
+
+char win(_Board Board)
+{
+	int v1 = 0, v2 = 0;
+	for (int i = 0; i < ROWS; i++)
+	{
+		for (int j = 0; j < COLUMNS; j++)
+		{
+			if (Board.data[i][j] == BLACK)
+			{
+				v1 += 1;
+
+			}
+			else if (Board.data[i][j] == WHITE)
+			{
+				v2 += 1;
+			}
+		}
+	}
+	if (v1 == 0)
+	{
+		return WHITE;
+	}
+	if (v2 == 0)
+	{
+		return BLACK;
+	}
+	return EMPTY;
+}

@@ -2,6 +2,7 @@
 #include <queue>
 #include <ctime>
 #include <iostream>
+#include <algorithm>
 using namespace std;
 extern bool neighbors[ROWS][COLUMNS][8];
 extern int neighbors2[8][2];
@@ -14,10 +15,7 @@ void AIPlay(_Board &Board, SDL_Surface* Screen, char AIColour, int Mode)
 		break;
 	case PRUNING:
 		int depth = DEPTH;
-		if (AIColour == WHITE)
-		{
-			depth--;
-		}
+
 		AlphaBetaPlay(Board, Screen, AIColour, depth);
 		break;
 	}
@@ -72,7 +70,7 @@ bool canRemoveBack(_Node &node, int remove)
 	char AIColor = node.board.data[stone.x][stone.y];
 	char rmColor = 3 - AIColor;
 	int dx = -stone.x + laststone.x, dy = -stone.y + laststone.y;
-	_Stone nextStone = { stone.x + dx,stone.y + dy };
+	_Stone nextStone = { laststone.x + dx,laststone.y + dy };
 	while (nextStone.x >= 0 && nextStone.x <= 4 && nextStone.y >= 0 && nextStone.y <= 8 && node.board.data[nextStone.x][nextStone.y] == rmColor)
 	{
 		count++;
@@ -89,22 +87,46 @@ bool canRemoveBack(_Node &node, int remove)
 
 double value(_Node node)
 {
-	double v = 0;
+	double v1 = 0, v2 = 0;
+	double x1 = 0, y1 = 0, x2 = 0, y2 = 0;
 	for (int i = 0; i < ROWS; i++)
 	{
 		for (int j = 0; j < COLUMNS; j++)
 		{
 			if (node.board.data[i][j] == BLACK)
 			{
-				v += 1;
+				v1 += 1;
+				y1 += i;
+				x1 += j;
 			}
 			else if(node.board.data[i][j] == WHITE)
 			{
-				v -= 1;
+				v2 += 1;
+				y2 += i;
+				x2 += j;
 			}
 		}
 	}
-	return v;
+	double dis = 0;
+	x1 /= v1; x2 /= v2;
+	y1 /= v1; y2 /= v2;
+	if (x1 > x2)
+	{
+		dis += x1 - x2;
+	}
+	else
+	{
+		dis += x2 - x1;
+	}
+	if (y1 > y2)
+	{
+		dis += y1 - y2;
+	}
+	else
+	{
+		dis += y2 - y1;
+	}
+	return 10*(v1 - v2)/dis;
 }
 
 vector<_Node> GetPossable(_Node node)
@@ -156,6 +178,14 @@ vector<_Node> GetPossable(_Node node)
 	return result;
 }
 
+int compare1(_Node n1, _Node n2)
+{
+	return n1.value > n2.value;
+}
+int compare2(_Node n1, _Node n2)
+{
+	return n2.value < n1.value;
+}
 vector<_Node> GetPossable(_Node node, char AIColor)
 {
 	vector<_Node> result;
@@ -185,6 +215,7 @@ vector<_Node> GetPossable(_Node node, char AIColor)
 				}
 				else
 				{
+					tmp.value = value(tmp);
 					result.push_back(tmp);
 				}
 				
@@ -196,6 +227,7 @@ vector<_Node> GetPossable(_Node node, char AIColor)
 					Q.pop();
 					if (v.size() == 0)
 					{
+						tmp.value = value(tmp);
 						result.push_back(tmp);
 						continue;
 					}
@@ -209,12 +241,28 @@ vector<_Node> GetPossable(_Node node, char AIColor)
 		
 		
 	}
+	if (AIColor == BLACK)
+	{
+		sort(result.begin(), result.end(), compare1);
+	}
+	else
+	{
+		sort(result.begin(), result.end(), compare2);
+	}
+	int s = result.size();
+	//if (result.size() > 8)
+	//{
+	//	s = 8;
+	//}
+
+	result = vector<_Node>(result.begin(), result.begin() + s);
 	return result;
 }
 
 _Node BetaPlay(_Node Root, int depth, double a, double b)
 {
 	vector<_Node> subs = GetPossable(Root, WHITE);
+
 	double beta = b;
 	_Node result;
 	if (depth == 0)
@@ -243,6 +291,7 @@ _Node BetaPlay(_Node Root, int depth, double a, double b)
 _Node AlphaPlay(_Node Root, int depth, double a, double b)
 {
 	vector<_Node> subs = GetPossable(Root, BLACK);
+
 	double alpha = a;
 	_Node result;
 	if (depth == 0)

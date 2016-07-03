@@ -18,3 +18,4 @@ void Populate(_Board &Board);
 void PopulateGUI(_Board Board, SDL_Surface *Screen);
 
 std::vector<_Stone> GetFreeStones(_Board board, char color);
+char win(_Board board);

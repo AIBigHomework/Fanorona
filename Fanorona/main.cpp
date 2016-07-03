@@ -68,10 +68,28 @@ int main()
 			if (nowColor == AIColour1)
 			{
 				AIPlay(Board, Screen, AIColour1, PRUNING);
+				char w = win(Board);
+				
+				if (w != EMPTY)
+				{
+					char str[3][6] = { "","BLACK","WHITE" };
+					status = PAUSE;
+					cout << str[w] << " win!" << endl;
+				}
+				
 			} 
 			else
 			{
 				AIPlay(Board, Screen, AIColour2, PRUNING);
+				char w = win(Board);
+				
+				if (w != EMPTY)
+				{
+					char str[3][6] = { "","BLACK","WHITE" };
+					status = PAUSE;
+					cout << str[w] << " win!" << endl;
+				}
+				
 			}
 			nowColor = 3 - nowColor;
 		}

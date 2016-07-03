@@ -25,7 +25,7 @@
 #define GREEDY	500
 #define PRUNING	600
 
-#define DEPTH 3
+#define DEPTH 2
 const char Title[] = "Fanorona";
 const char Icon[] = "./Data/Icon.bmp";
 
