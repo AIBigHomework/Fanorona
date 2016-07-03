@@ -1,4 +1,5 @@
 #include "aiplayer.h"
+#include "train.h"
 #include <queue>
 #include <ctime>
 #include <iostream>
@@ -12,6 +13,7 @@ void AIPlay(_Board &Board, SDL_Surface* Screen, char AIColour, int Mode)
 	switch (Mode)
 	{
 	case GREEDY:
+		GreddyPlay(Board, AIColour);
 		break;
 	case PRUNING:
 		int depth = DEPTH;
@@ -19,6 +21,23 @@ void AIPlay(_Board &Board, SDL_Surface* Screen, char AIColour, int Mode)
 		AlphaBetaPlay(Board, Screen, AIColour, depth);
 		break;
 	}
+}
+
+void GreddyPlay(_Board &Board, int AIColour)
+{
+	_Node next;
+	_Node Root = { Board,{},0 };
+	int depth = rand() % 2 + 1;
+	if (AIColour == BLACK)//MAX节点
+	{
+		next = AlphaPlay(Root, depth, -DBL_MAX, DBL_MAX);
+	}
+	else//MIN节点
+	{
+		next = BetaPlay(Root, depth, -DBL_MAX, DBL_MAX);
+	}
+	_Action action = next.lastaction;
+	ShowAction(Board, action);
 }
 
 bool canRemoveFront(_Node &node, int remove)
@@ -251,6 +270,14 @@ vector<_Node> GetPossable(_Node node, char AIColor)
 		sort(result.begin(), result.end(), compare2);
 	}
 	int s = result.size();
+	if (s > 0)
+	{
+		s = rand() % s + 2;
+	}
+	if (s > result.size())
+	{
+		s = result.size();
+	}
 	//if (result.size() > 8)
 	//{
 	//	s = 8;
@@ -373,4 +400,22 @@ void ShowAction(_Board &Board, SDL_Surface* Screen, _Action action)
 	Board.data[stone.x][stone.y] -= SELECT;//Unselected
 	PopulateGUI(Board, Screen);
 	SDL_UpdateRect(Screen, 0, 0, 0, 0);
+}
+
+void ShowAction(_Board &Board, _Action action)
+{
+	_Stone stone = action.stone;
+	for (int i = 0; i < action.actions.size(); i++)
+	{
+		Board.data[action.actions[i].x][action.actions[i].y] = Board.data[stone.x][stone.y];
+		Board.data[stone.x][stone.y] = EMPTY;
+		stone.x = action.actions[i].x;
+		stone.y = action.actions[i].y;
+
+		//Remove
+		for (int j = 0; j < action.actions[i].removedNum; j++)
+		{
+			Board.data[action.actions[i].removed[j].x][action.actions[i].removed[j].y] = EMPTY;
+		}
+	}
 }

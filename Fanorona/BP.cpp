@@ -2,6 +2,8 @@
 #include <stdio.h>  
 #include <math.h>  
 #include <assert.h>  
+#include <fstream>
+#include <iostream>
 #include "BP.h"  
 
 BP::BP(int innum, int outnum)
@@ -11,6 +13,97 @@ BP::BP(int innum, int outnum)
 	hd_num = (int)sqrt((in_num + ou_num) * 1.0) + 5;
 	if (hd_num > NUM) hd_num = NUM; 
 	InitNetWork();
+}
+
+
+void BP::Read()
+{
+	std::ifstream infile;
+	infile.open("saved");
+	
+	//w[LAYER][NUM][NUM];
+	for (int i = 0; i < LAYER; i++)
+	{
+		for (int j = 0; j < NUM; j++)
+		{
+			for (int k = 0; k < NUM; k++)
+			{
+				infile >> w[i][j][k];
+			}
+		}
+	}
+	//b[LAYER][NUM]; 
+	for (int i = 0; i < LAYER; i++)
+	{
+		for (int j = 0; j < NUM; j++)
+		{
+			infile >> b[i][j];
+		}
+	}
+	//x[LAYER][NUM]; 
+	for (int i = 0; i < LAYER; i++)
+	{
+		for (int j = 0; j < NUM; j++)
+		{
+			infile >> x[i][j];
+		}
+	}
+	//d[LAYER][NUM]; 
+	for (int i = 0; i < LAYER; i++)
+	{
+		for (int j = 0; j < NUM; j++)
+		{
+			infile >> d[i][j];
+		}
+	}
+	infile.close();
+}
+
+void BP::Write()
+{
+	std::ofstream outfile;
+	outfile.open("saved");
+
+	//w[LAYER][NUM][NUM];
+	for (int i = 0; i < LAYER; i++)
+	{
+		for (int j = 0; j < NUM; j++)
+		{
+			for (int k = 0; k < NUM; k++)
+			{
+				outfile << w[i][j][k] << " ";
+			}
+		}
+	}
+	outfile << std::endl;
+	//b[LAYER][NUM]; 
+	for (int i = 0; i < LAYER; i++)
+	{
+		for (int j = 0; j < NUM; j++)
+		{
+			outfile << b[i][j] << " ";
+		}
+	}
+	outfile << std::endl;
+	//x[LAYER][NUM]; 
+	for (int i = 0; i < LAYER; i++)
+	{
+		for (int j = 0; j < NUM; j++)
+		{
+			outfile << x[i][j] << " ";
+		}
+	}
+	outfile << std::endl;
+	//d[LAYER][NUM]; 
+	for (int i = 0; i < LAYER; i++)
+	{
+		for (int j = 0; j < NUM; j++)
+		{
+			outfile << d[i][j] << " ";
+		}
+	}
+	outfile << std::endl;
+	outfile.close();
 }
 
 //获取训练所有样本数据  
@@ -39,9 +132,6 @@ void BP::TrainFanorona(std::stack<Data> s)
 //开始进行训练  
 void BP::Train()
 {
-	printf("Begin to train BP NetWork!\n");
-
-
 	for (int iter = 0; iter <= ITERS; iter++)
 	{
 

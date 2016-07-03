@@ -34,6 +34,8 @@ public:
 	void TrainFanorona(std::stack<Data> s);
 	Vector<Type> ForeCast(const Vector<Type>);
 	BP::BP(int innum, int outnum);
+	void Write();
+	void Read();
 
 private:
 

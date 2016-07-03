@@ -30,7 +30,7 @@
     <ClCompile Include="BP.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="test.cpp">
+    <ClCompile Include="train.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -48,6 +48,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="BP.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="train.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

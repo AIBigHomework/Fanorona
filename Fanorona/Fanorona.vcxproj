@@ -155,7 +155,7 @@
     <ClCompile Include="BP.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="stone.cpp" />
-    <ClCompile Include="test.cpp" />
+    <ClCompile Include="train.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="aiplayer.h" />
@@ -163,6 +163,7 @@
     <ClInclude Include="BP.h" />
     <ClInclude Include="constants.h" />
     <ClInclude Include="stone.h" />
+    <ClInclude Include="train.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

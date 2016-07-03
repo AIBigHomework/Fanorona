@@ -1,7 +1,9 @@
 #include <iostream>
+#include <ctime>
 #include "constants.h"
 #include "board.h"
 #include "aiplayer.h"
+#include "train.h"
 #undef main
 
 using namespace std;
@@ -35,7 +37,7 @@ void CleanUp()
 	SDL_FreeSurface(Screen);
 	SDL_Quit();
 }
-/*
+
 int main()
 {
 	_Board Board;
@@ -45,7 +47,10 @@ int main()
 	char AIColour2 = WHITE;
 	char nowColor = WHITE;
 	int status = PLAY;
-
+	srand(time(NULL));
+	training(10000);
+	cout << "over" << endl;
+	return 0;
 	Initialize();
 	Populate(Board);
 	PopulateGUI(Board, Screen);
@@ -99,4 +104,3 @@ int main()
 	CleanUp();
 	return 0;
 }
-*/

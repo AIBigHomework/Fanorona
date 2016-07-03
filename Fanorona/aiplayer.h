@@ -25,4 +25,7 @@ std::vector<_Node> GetPossable(_Node node, char AIColor);
 std::vector<_Node> GetPossable(_Node node);
 bool canRemoveBack(_Node &node, int remove);
 bool canRemoveFront(_Node &node, int remove);
+void ShowAction(_Board &Board, _Action action);
 void ShowAction(_Board &Board, SDL_Surface *Screen, _Action action);
+void GreddyPlay(_Board &Board, int AIColour);
+double value(_Node node);
