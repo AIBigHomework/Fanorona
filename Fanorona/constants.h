@@ -22,8 +22,9 @@
 #define PLAY	400
 #define PAUSE	401
 
-#define GREEDY	500
+#define TESTING	500
 #define PRUNING	600
+#define TRAINING 700
 
 #define DEPTH 2
 const char Title[] = "Fanorona";

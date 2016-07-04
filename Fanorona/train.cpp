@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include "train.h"
 #include <iostream>
 using namespace std;
@@ -21,7 +22,7 @@ void training(int time)
 {
 	_Board Board;
 
-	while (time--)
+	for (int t = 1; t <= time; t++)
 	{
 		Populate(Board);
 		char AIColour1 = BLACK;
@@ -33,11 +34,11 @@ void training(int time)
 		{
 			if (nowColor == AIColour1)
 			{
-				AIPlay(Board, NULL, AIColour1, GREEDY);
+				AIPlay(Board, NULL, AIColour1, TESTING);
 			}
 			else
 			{
-				AIPlay(Board, NULL, AIColour2, GREEDY);
+				AIPlay(Board, NULL, AIColour2, TESTING);
 			}
 			Data d;
 			std::vector<double> input;
@@ -54,7 +55,7 @@ void training(int time)
 			char w = win(Board);
 			if (w != EMPTY)
 			{
-				cout << "Get a sample" << endl;
+				cout << "Get a sample, finished ";
 				status = PAUSE;
 				if (w == WHITE)
 				{
@@ -69,7 +70,15 @@ void training(int time)
 			}
 			
 		}
-		cout  << time << endl;
+		cout  << t << " training." << endl;
+		if (t % 1000 == 0)
+		{
+			char filename[20];
+			sprintf(filename, "saved-%d", t);
+			bp.Write(filename);
+		}
 	}
-	bp.Write();
+	char filename[20];
+	sprintf(filename, "saved-%d", time);
+	bp.Write(filename);
 }

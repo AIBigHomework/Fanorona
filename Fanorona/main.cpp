@@ -7,7 +7,7 @@
 #undef main
 
 using namespace std;
-
+extern BP bp;
 //extern "C" { FILE __iob_func[3] = { *stdin,*stdout,*stderr }; }
 SDL_Surface *Screen;
 
@@ -47,10 +47,21 @@ int main()
 	char AIColour2 = WHITE;
 	char nowColor = WHITE;
 	int status = PLAY;
+	int trainMark = 1;
+	cout << "ÊÇ·ñÑµÁ·?(0/1)";
+	cin >> trainMark;
 	srand(time(NULL));
-	training(10000);
-	cout << "over" << endl;
-	return 0;
+	if (trainMark)
+	{
+		training(10000);
+		cout << "over" << endl;
+		return 0;
+	}
+	else
+	{
+		bp.Read("saved-10000");
+	}
+	
 	Initialize();
 	Populate(Board);
 	PopulateGUI(Board, Screen);
@@ -85,7 +96,7 @@ int main()
 			} 
 			else
 			{
-				AIPlay(Board, Screen, AIColour2, PRUNING);
+				AIPlay(Board, Screen, AIColour2, TRAINING);
 				char w = win(Board);
 				
 				if (w != EMPTY)

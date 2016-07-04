@@ -16,10 +16,10 @@ BP::BP(int innum, int outnum)
 }
 
 
-void BP::Read()
+void BP::Read(char name[])
 {
 	std::ifstream infile;
-	infile.open("saved");
+	infile.open(name);
 	
 	//w[LAYER][NUM][NUM];
 	for (int i = 0; i < LAYER; i++)
@@ -59,10 +59,10 @@ void BP::Read()
 	infile.close();
 }
 
-void BP::Write()
+void BP::Write(char name[])
 {
 	std::ofstream outfile;
-	outfile.open("saved");
+	outfile.open(name);
 
 	//w[LAYER][NUM][NUM];
 	for (int i = 0; i < LAYER; i++)

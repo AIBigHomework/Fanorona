@@ -13,8 +13,8 @@
 #define ITERS    1000     //最大训练次数  
 #define ETA_W    0.0035   //权值调整率  
 #define ETA_B    0.001    //阀值调整率  
-#define ERROR    0.002    //单个样本允许的误差  
-#define ACCU     0.005    //每次迭代允许的误差  
+#define ERROR    0.01    //单个样本允许的误差  
+#define ACCU     0.02    //每次迭代允许的误差  
 
 #define Type double  
 #define Vector std::vector  
@@ -34,8 +34,8 @@ public:
 	void TrainFanorona(std::stack<Data> s);
 	Vector<Type> ForeCast(const Vector<Type>);
 	BP::BP(int innum, int outnum);
-	void Write();
-	void Read();
+	void Write(char name[]);
+	void Read(char name[]);
 
 private:
 
