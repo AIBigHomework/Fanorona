@@ -17,27 +17,27 @@ void AIPlay(_Board &Board, SDL_Surface* Screen, char AIColour, int Mode)
 		break;
 	case PRUNING:
 	case TRAINING:
-		int depth = DEPTH;
-
-		AlphaBetaPlay(Board, Screen, AIColour, depth, Mode);
+		AlphaBetaPlay(Board, Screen, AIColour, DEPTH, Mode);
+		break;
+	case PRUNING2:
+	case TRAINING2:
+		AlphaBetaPlayForTrain(Board, AIColour, 1, Mode);
 		break;
 	}
 }
 
-void TestingPlay(_Board &Board, int AIColour)
+void TestingPlay(_Board &Board, char AIColour)
 {
-	_Node next;
 	_Node Root = { Board,{},0 };
-	int depth = rand() % 2 + 1;
-	if (AIColour == BLACK)//MAX节点
+	vector<_Node> subs = GetPossable(Root, AIColour, TRAINING);
+	int count = subs.size();
+	if (count == 0)
 	{
-		next = AlphaPlay(Root, depth, -DBL_MAX, DBL_MAX, TESTING);
+		return;
 	}
-	else//MIN节点
-	{
-		next = BetaPlay(Root, depth, -DBL_MAX, DBL_MAX, TESTING);
-	}
-	_Action action = next.lastaction;
+	int ran = rand() % count;
+
+	_Action action = subs[ran].lastaction;
 	ShowAction(Board, action);
 }
 
@@ -105,9 +105,9 @@ bool canRemoveBack(_Node &node, int remove)
 	return count > 0;
 }
 
-double value(_Node node, int mode)
+double value(_Node node, int mode, char AIColor)
 {
-	if (mode == TRAINING)
+	if (mode == TRAINING || mode == TRAINING2)
 	{
 		return BPvalue(node);
 	}
@@ -120,15 +120,30 @@ double value(_Node node, int mode)
 			if (node.board.data[i][j] == BLACK)
 			{
 				v1 += 1;
+				x1 += i;
+				y1 += j;
 			}
 			else if(node.board.data[i][j] == WHITE)
 			{
 				v2 += 1;
+				x2 += i;
+				y2 += j;
 			}
 		}
 	}
+	x1 /= (v1 == 0 ? 1 : v1); x2 /= (v2 == 0 ? 1 : v2); y1 /= (v1 == 0 ? 1 : v1); y2 /= (v2 == 0 ? 1 : v2);
+	double disx = x1 - x2 > 0 ? x1 - x2 : x2 - x1;
+	double disy = y1 - y2 > 0 ? y1 - y2 : y2 - y1;
+	double dis = (v1 == 0 || v2 == 0) ? 1 : disx + disy;
+	if (AIColor == BLACK)
+	{
+		return 100 * (v1 - v2) - dis;
+	}
+	else
+	{
+		return 100 * (v1 - v2) + dis;
+	}
 	
-	return 10 * (v1 - v2);// / dis;
 }
 
 vector<_Node> GetPossable(_Node node)
@@ -217,7 +232,7 @@ vector<_Node> GetPossable(_Node node, char AIColor, int mode)
 				}
 				else
 				{
-					tmp.value = value(tmp, mode);
+					tmp.value = value(tmp, mode, AIColor);
 					result.push_back(tmp);
 				}
 				
@@ -229,7 +244,7 @@ vector<_Node> GetPossable(_Node node, char AIColor, int mode)
 					Q.pop();
 					if (v.size() == 0)
 					{
-						tmp.value = value(tmp, mode);
+						tmp.value = value(tmp, mode, AIColor);
 						result.push_back(tmp);
 						continue;
 					}
@@ -270,20 +285,22 @@ vector<_Node> GetPossable(_Node node, char AIColor, int mode)
 
 _Node BetaPlay(_Node Root, int depth, double a, double b, int mode)
 {
-	vector<_Node> subs = GetPossable(Root, WHITE, mode);
-
-	double beta = DBL_MAX;
-	_Node result;
+	_Node result = Root;
 	if (depth == 0)
 	{
 		result = Root;
-		result.value = value(result, mode);
+		result.value = value(result, mode, BLACK);
 		return result;
 	}
+	vector<_Node> subs = GetPossable(Root, WHITE, mode);
+
+	double beta = DBL_MAX;
+	
+	
 	for (int i = 0; i < subs.size(); i++)
 	{
 		_Node tmp = AlphaPlay(subs[i], depth - 1, a, beta, mode);
-		if (tmp.value < beta)
+		if (tmp.value <= beta)
 		{
 			beta = tmp.value;
 			subs[i].value = tmp.value;
@@ -303,20 +320,21 @@ _Node BetaPlay(_Node Root, int depth, double a, double b, int mode)
 
 _Node AlphaPlay(_Node Root, int depth, double a, double b, int mode)
 {
-	vector<_Node> subs = GetPossable(Root, BLACK, mode);
-
-	double alpha = -DBL_MAX;
-	_Node result;
+	_Node result = Root;
 	if (depth == 0)
 	{
 		result = Root;
-		result.value = value(result, mode);
+		result.value = value(result, mode, WHITE);
 		return result;
 	}
+	vector<_Node> subs = GetPossable(Root, BLACK, mode);
+
+	double alpha = -DBL_MAX;
+	
 	for (int i = 0; i < subs.size(); i++)
 	{
 		_Node tmp = BetaPlay(subs[i], depth - 1, alpha, b, mode);
-		if (tmp.value > alpha)
+		if (tmp.value >= alpha)
 		{
 			alpha = tmp.value;
 			subs[i].value = tmp.value;
@@ -355,6 +373,22 @@ void AlphaBetaPlay(_Board &Board, SDL_Surface* Screen, char AIColour, int depth,
 	_Action action = next.lastaction;
 	ShowAction(Board, Screen, action);
 	cout << "*********************************************" << endl;
+}
+
+void AlphaBetaPlayForTrain(_Board &Board, char AIColour, int depth, int mode)
+{
+	_Node next;
+	_Node Root = { Board,{},0 };
+	if (AIColour == BLACK)//MAX节点
+	{
+		next = AlphaPlay(Root, depth, -DBL_MAX, DBL_MAX, mode);
+	}
+	else//MIN节点
+	{
+		next = BetaPlay(Root, depth, -DBL_MAX, DBL_MAX, mode);
+	}
+	_Action action = next.lastaction;
+	ShowAction(Board, action);
 }
 
 void ShowAction(_Board &Board, SDL_Surface* Screen, _Action action)

@@ -27,5 +27,6 @@ bool canRemoveBack(_Node &node, int remove);
 bool canRemoveFront(_Node &node, int remove);
 void ShowAction(_Board &Board, _Action action);
 void ShowAction(_Board &Board, SDL_Surface *Screen, _Action action);
-void TestingPlay(_Board &Board, int AIColour);
-double value(_Node node, int mode);
+void TestingPlay(_Board &Board, char AIColour);
+double value(_Node node, int mode, char AIColor);
+void AlphaBetaPlayForTrain(_Board &Board, char AIColour, int depth, int mode);

@@ -30,15 +30,32 @@ void training(int time)
 		char nowColor = WHITE;
 		int status = PLAY;
 		std::stack<Data> stk;
+		char w;
 		while (status == PLAY)
 		{
 			if (nowColor == AIColour1)
 			{
-				AIPlay(Board, NULL, AIColour1, TESTING);
+				if (t % 2 == 0)
+				{
+					AIPlay(Board, NULL, AIColour1, PRUNING2);
+				} 
+				else
+				{
+					AIPlay(Board, NULL, AIColour1, TESTING);
+				}
+				
 			}
 			else
 			{
-				AIPlay(Board, NULL, AIColour2, TESTING);
+				if (t % 2 == 0)
+				{
+					AIPlay(Board, NULL, AIColour2, TESTING);
+				}
+				else
+				{
+					AIPlay(Board, NULL, AIColour2, PRUNING2);
+				}
+				
 			}
 			Data d;
 			std::vector<double> input;
@@ -52,7 +69,7 @@ void training(int time)
 			d.x = input;
 			stk.push(d);
 			nowColor = 3 - nowColor;
-			char w = win(Board);
+			w = win(Board);
 			if (w != EMPTY)
 			{
 				cout << "Get a sample, finished ";
@@ -70,7 +87,12 @@ void training(int time)
 			}
 			
 		}
-		cout  << t << " training." << endl;
+		cout << t << " training." << endl;
+		//if ((w == BLACK && t % 2 == 1) || (w == WHITE && t % 2 == 0))
+		//{
+		//	cout << t << " win!!!!!!!!!!!!!!!!!!!!" << endl;
+		//	system("pause");
+		//}
 		if (t % 1000 == 0)
 		{
 			char filename[20];

@@ -179,8 +179,19 @@ void BP::GetNums()
 //初始化网络  
 void BP::InitNetWork()
 {
-	memset(w, 0, sizeof(w));      //初始化权值和阀值为0，也可以初始化随机值  
-	memset(b, 0, sizeof(b));
+	for (int i = 0; i < LAYER; i++)
+	{
+		for (int j = 0; j < NUM; j++)
+		{
+			for (int k = 0; k < NUM; k++)
+			{
+				w[i][j][k] = 0.1;
+			}
+			b[i][j] = 0.1;
+		}
+	}
+	//memset(w, 0, sizeof(w));      //初始化权值和阀值为0，也可以初始化随机值  
+	//memset(b, 0, sizeof(b));
 }
 
 //工作信号正向传递子过程  

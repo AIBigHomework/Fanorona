@@ -55,12 +55,10 @@ int main()
 	{
 		training(10000);
 		cout << "over" << endl;
-		return 0;
 	}
-	else
-	{
-		bp.Read("saved-10000");
-	}
+
+	bp.Read("saved-10000");
+
 	
 	Initialize();
 	Populate(Board);
@@ -83,7 +81,7 @@ int main()
 		{
 			if (nowColor == AIColour1)
 			{
-				AIPlay(Board, Screen, AIColour1, PRUNING);
+				AIPlay(Board, Screen, AIColour1, TRAINING);
 				char w = win(Board);
 				
 				if (w != EMPTY)
@@ -96,7 +94,7 @@ int main()
 			} 
 			else
 			{
-				AIPlay(Board, Screen, AIColour2, TRAINING);
+				AIPlay(Board, Screen, AIColour2, PRUNING);
 				char w = win(Board);
 				
 				if (w != EMPTY)

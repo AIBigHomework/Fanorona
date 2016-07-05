@@ -24,9 +24,11 @@
 
 #define TESTING	500
 #define PRUNING	600
+#define PRUNING2 601
 #define TRAINING 700
+#define TRAINING2 702
 
-#define DEPTH 2
+#define DEPTH 1
 const char Title[] = "Fanorona";
 const char Icon[] = "./Data/Icon.bmp";
 
